@@ -1,0 +1,14 @@
+{
+   "name": "express",
+   "version": "1.0.0",
+   "description": "Express Server for React app",
+   "main": "index.js",
+   "scripts": {
+      "build": "npx tsc",
+      "start": "node dist/index.js",
+      "dev": "nodemon src/index.ts",
+      "test": "echo \"Error: no test specified\" && exit 1"
+   },
+   "author": "",
+   "license": "MIT"
+}

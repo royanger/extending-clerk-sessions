@@ -3,6 +3,7 @@ module.exports = {
    tailwind: true,
    postcss: true,
    ignoredRouteFiles: ['**/.*'],
+   serverDependenciesToBundle: 'all',
    // appDirectory: "app",
    // assetsBuildDirectory: "public/build",
    // serverBuildPath: "build/index.js",

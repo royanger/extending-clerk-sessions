@@ -1,4 +1,4 @@
-import { ClerkProvider } from '@clerk/nextjs'
+import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import './styles.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -19,7 +19,14 @@ export default function RootLayout({
       <ClerkProvider>
          <html lang="en">
             <body className={inter.className}>
-               <Header label="NextJS" />
+               <Header label="NextJS">
+                  <SignedIn>
+                     <UserButton />
+                  </SignedIn>
+                  <SignedOut>
+                     <SignInButton />
+                  </SignedOut>
+               </Header>
                <main className="w-full flex flex-row justify-center">
                   <div className="container flex flex-row py-4">
                      {children}

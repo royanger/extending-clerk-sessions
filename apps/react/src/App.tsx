@@ -1,35 +1,89 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { SignedIn, SignedOut, UserButton, SignInButton, ClerkProvider, RedirectToSignIn, SignUp, SignIn } from '@clerk/clerk-react'
+import { Header } from 'ui'
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+if (!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY) {
+   throw new Error('Please update your Environmental Variables to include VITE_CLERK_PUBLISHABLE_KEY')
 }
 
+const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+
+function PublicPage() {
+   console.log('public page reached')
+   return (
+      <>
+         <Header label="React">
+            <SignedIn>
+               <UserButton />
+            </SignedIn>
+            <SignedOut>
+               <SignInButton />
+            </SignedOut>
+         </Header>
+         <h1>Public page</h1>
+         <a href="/protected">Go to protected page</a>
+      </>
+   );
+}
+
+function ProtectedPage() {
+   console.log('private page reached')
+   return (
+      <>
+         <Header label="React">
+            <SignedIn>
+               <UserButton />
+            </SignedIn>
+            <SignedOut>
+               <SignInButton />
+            </SignedOut>
+         </Header>
+         <h1>Protected page</h1>
+         <UserButton />
+      </>
+   );
+}
+
+function ClerkWithRouter() {
+   const navigate = useNavigate()
+
+   return (
+
+      <ClerkProvider publishableKey={clerkPubKey} navigate={(to) => navigate(to)}>
+         <Routes>
+            <Route path="/" element={<PublicPage />} />
+            <Route
+               path="/sign-in/*"
+               element={<SignIn routing="path" path="/sign-in" />}
+            />
+            <Route
+               path="/sign-up/*"
+               element={<SignUp routing="path" path="/sign-up" />}
+            />
+            <Route
+               path="/protected"
+               element={
+                  <>
+                     <SignedIn>
+                        <ProtectedPage />
+                     </SignedIn>
+                     <SignedOut>
+                        <RedirectToSignIn />
+                     </SignedOut>
+                  </>
+               }
+            />
+         </Routes>
+
+      </ClerkProvider>
+   )
+}
+
+function App() {
+   return (
+      <BrowserRouter>
+         <ClerkWithRouter />
+      </BrowserRouter>
+   )
+}
 export default App
